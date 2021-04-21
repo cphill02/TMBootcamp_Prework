@@ -1,14 +1,32 @@
-const port = process.env.PORT || 3000,
-      http = require('http'),
-      fs = require('fs').promises,
+const http = require('http'),
+      fs = require('fs'),
+      path = require('path'),
       async = require('async');
 
+const port = process.env.PORT || 3000,
+      hostname = process.env.C9_HOSTNAME || 'http://127.0.0.1';
+
+const mime = {
+    html: 'text/html',
+    txt: 'text/plain',
+    css: 'text/css',
+    gif: 'image/gif',
+    ico: 'image/x-icon',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    js: 'application/javascript'
+};
+
+/*
 async function loadFileAsync(file){
     const data = await fs.readFile(file, "binary");
-    return new Buffer(data);
+    //return new Buffer(data); //old & depricated method
+    return Buffer.from(data).toString();
 }
+*/
 
-var log = function(entry) {
+var log = function(entry){
     fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
 };
 
@@ -50,26 +68,26 @@ var server = http.createServer(function (req, res){
         //if there isn't a dot in the req.url then serve the ./index.html
         //otherwise assume the dot is a file extension and serve the file in req.url
         let file;
-        if (req.url && req.url.search(/[.]/) !== -1){
+        
+        if (req.url && req.url.search(/[.]/) !== -1){ //default to index.html
             file = './' + req.url;
         } else {
             file = './index.html';
         }
-        try {
-            //read file asyncronously, fs.readFile is wrapped in an async promise function since it normally blocks
-            loadFileAsync(file).then(data => {
-                res.writeHead(200); //write an OK header
-                res.write(data.toString()); //send the flat file to the client
-                res.end();
-            });
-        }
-        catch(err){ //file not found
-            if (err){
-                res.writeHead(404, {'Content-Type': 'text/html'});
-                res.write('Opps! File not found'); //send a standard flat file to the client (really Apache should do this vs Node.js)
-                res.end();
-            }
-        }
+        let type = mime[path.extname(file).slice(1)] || 'text/plain'; //get mime type
+        
+        //serve file to client
+        let s = fs.createReadStream(file);
+        s.on('open', function(){
+            res.setHeader('Content-Type', type);
+            res.statusCode = 200;
+            s.pipe(res);
+        });
+        s.on('error', function(){
+            res.setHeader('Content-Type', 'text/plain');
+            res.statusCode = 404;
+            res.end('Not found');
+        });
     }
 });
 
@@ -77,7 +95,6 @@ var server = http.createServer(function (req, res){
 server.listen(port);
 
 // Put a friendly message on the terminal
-//console.log('Server running at http://127.0.0.1:' + port + '/');
-console.log('Server running at http://18.191.154.123:' + port + '/');
+console.log('Server running at ' + hostname + ':' + port + '/');
 
 //18.191.154.123 -- ECS VPC instance Public IP Address.
