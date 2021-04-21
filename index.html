@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sample Application</title>
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
+    <link rel="stylesheet" type="text/css" media="all" href="./style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        /* global $ */
+        'use strict';
+    
+        function getRemainder(n){ //get the remainder after the decimal
+            return n - Math.floor(n);
+        }
+        function formatTime(n){ //pad numbers less than 10 with a leading zero
+            return n >= 10 ? '' + n : '0' + n; 
+        }
+    
+        $(document).ready( function(){ //wait for DOM to be available
+        	$('input[name=valOne]').focus(); //start with the first input cursor blinking
+        	var start = new Date;
+
+            setInterval(function(){ //update a timer every second
+                let total_seconds = (new Date - start) / 1000;
+            	let hour = total_seconds / 3600;
+            	let min = getRemainder(hour) * 60;
+            	let sec = getRemainder(min) * 60;
+            	
+            	hour = parseInt(hour);
+            	min = parseInt(min);
+            	sec = parseInt(sec);
+                $('#clock').html( formatTime(hour) + ':' + formatTime(min) + ':' + formatTime(sec) );
+            }, 1000);
+            
+            $('#submit').off().on('click', function(){
+                let form = this.parentElement.parentElement;
+                let valOne = form.valOne.value;
+                let valTwo = form.valTwo.value;
+                if (valOne || valTwo){
+                    $.ajax({ 
+    					type: 'POST',
+    					url: './' + valOne + '/' + valTwo,
+    					success: function(result){
+    					    //console.log(result);
+    					    if (result && result.sum){
+    					        form.result.value =result.sum
+    					    } else {
+    					        form.result.value = 'ERROR'
+    					    }
+    	                    $('#error_msg').text('');
+    					},
+    					error: function(){
+    						$('#error_msg').text('Error parsing server response');
+    					}
+                    });
+                } else {
+                    $('#error_msg').text('At least try entering one number.');
+                }
+             return false;
+            });
+        });
+        
+    </script>
+  </head>
+  <body>
+    <div class="textColumn">
+      <h1>Welcome</h1>
+      <p>This is an example Node.js application running on a dedicated environment in the AWS Cloud</p>
+      <p>Developer: Chris Phillips</p>
+      <p>Senior Engineer Software</p>
+    </div>
+    <div class="linksColumn">
+      <h2 class="Timer">Running Timer: <span id='clock'> 00:00:00 </span></h2>
+      <form>
+          <div id="calc">
+              <h3>Input 2 numbers below and click calculate:</h3>
+              <input type="text" name="valOne"/>
+              <span>&nbsp;+&nbsp;</span>
+              <input type="text" name="valTwo"/>
+              <span>&nbsp;=&nbsp;</span>
+              <input type="text" name="result"/>
+              <button id='submit'>Calculate</button>
+              <span id='error_msg'></span>
+          </div>
+      </form>
+      <div class="footer">
+          <h3>Work History:</h3>
+          <ul>
+            <li><a href="https://lms.sprint.com" target="_blank">LearningX LMS</a></li>
+            <li><a href="https://star.sprint.com" target="_blank">STAR LMS</a></li>
+          </ul>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+body {
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        font-size:14px;
+        -moz-transition-property: text-shadow;
+        -moz-transition-duration: 4s;
+        -webkit-transition-property: text-shadow;
+        -webkit-transition-duration: 4s;
+        text-shadow: none;
+        background-color: #33342D;
+}
+.blurry {
+    -moz-transition-property: text-shadow;
+    -moz-transition-duration: 4s;
+    -webkit-transition-property: text-shadow;
+    -webkit-transition-duration: 4s;
+    text-shadow: #fff 0px 0px 25px;
+  }
+a {
+    color: white;
+}
+.textColumn, .linksColumn {
+    padding: 2em;
+}
+.linksColumn {
+    position: absolute;
+    top:0px;
+    right: 0px;
+    bottom: 0px;
+    left: 30%;
+    left: calc(20% + 200px);
+    background-color: #33342D;
+}
+.textColumn {
+    position: absolute;
+    top: 0px;
+    right: 70%;
+    bottom: 0px;
+    left: 0px;
+    min-width: 270px;
+    z-index: 9999;
+    text-align: right;
+    padding-top: 11em;
+    background-color: #73A53E;
+    color: #33342D;
+
+}
+.textColumn p {
+    width: 75%;
+    float:right;
+}
+h1 {
+    color: #33342D;
+    font-size: 500%;
+    font-weight: normal;
+    margin-bottom: 0em;
+}
+h2 {
+    font-size: 200%;
+    font-weight: normal;
+    margin-bottom: 0em;
+}
+h3 {
+    font-size: 150%;
+    font-weight: normal;
+    margin-bottom: .5em;
+}
+ul {
+    padding-left: 1em;
+    margin: 0px;
+}
+li {
+    margin: 1em 0em;
+}
+.footer {
+  clear: both;
+  position: absolute;
+  bottom: 10%;
+}
+.Timer { 
+  float: left;
+}
+#clock {
+    background-color: black;
+    color: #73A53E;
+    padding: 0 10%;
+}
+#submit {
+    float: left;
+    clear: both;
+    margin-top: 20px;
+    
+    align-items: flex-start;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(to bottom, #fff, #e6e6e6);
+    background-repeat: repeat-x;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, .1) rgba(0, 0, 0, .1) rgba(0, 0, 0, .25);
+    border-radius: 10px/8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #000;
+    cursor: pointer;
+    direction: ltr;
+    font: bold 10px Arial, Helvetica, Sans-serif;
+    font-size: 1.2em;
+    letter-spacing: .75px;
+    opacity: .8;
+    outline: none;
+    text-align: center;
+    text-indent: 0;
+    text-rendering: auto;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, .75);
+    text-transform: none;
+    white-space: nowrap;
+    word-spacing: normal;
+}
+#submit:active {
+  margin-top: 21px;
+  margin-left: 1px;
+}
+#calc {
+    float: left;
+    margin-top: 100px;
+    width: 100%;
+}
+#calc input {
+    width: 60px;
+    float: left;
+}
+#calc span {
+    float: left; 
+}
+#error_msg {
+    color: red;
+    float: left;
+    clear: both;
+    margin-top: 20px;
+}
