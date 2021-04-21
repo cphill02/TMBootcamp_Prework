@@ -18,14 +18,6 @@ const mime = {
     js: 'application/javascript'
 };
 
-/*
-async function loadFileAsync(file){
-    const data = await fs.readFile(file, "binary");
-    //return new Buffer(data); //old & depricated method
-    return Buffer.from(data).toString();
-}
-*/
-
 var log = function(entry){
     fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
 };
