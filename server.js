@@ -15,21 +15,21 @@ var log = function(entry) {
 var server = http.createServer(function (req, res){
     if (req.method === 'POST'){
         //handle a catchall endpoint from any HTTP POST which parses any number of integers passed sequentially as a path
-        
+
         //console.log(req.url);
         if (req.url){
             let result = 0;
             let url = req.url.replace(/^\//,''); //strip off leading '/' if it exists
             url = url.replace(/\?.*/,''); //strip off query params
-            
+
             //using the async .each module as the standard js forEach is a blocking sync function.
             async.each(url.split('/'), function(val, callback){
-                
+
                 // Perform operation on file here.
                 //console.log('Processing val ' + val);
                  if (val){
                     result += val.match(/[0-9]*/) * 1; //cast value to an integer and add value to the result response.
-                    callback(); 
+                    callback();
                 } else {
                     callback(); //val is empty, continue
                 }
@@ -42,7 +42,7 @@ var server = http.createServer(function (req, res){
                 res.end(); //close the http connection
             });
         } else {
-            res.writeHead(500, 'ERROR', {'Content-Type': 'text/html'}); 
+            res.writeHead(500, 'ERROR', {'Content-Type': 'text/html'});
         }
     } else {
         /* Worlds most basic async web server, flat file router */
@@ -77,4 +77,7 @@ var server = http.createServer(function (req, res){
 server.listen(port);
 
 // Put a friendly message on the terminal
-console.log('Server running at http://127.0.0.1:' + port + '/');
+//console.log('Server running at http://127.0.0.1:' + port + '/');
+console.log('Server running at http://18.191.154.123:' + port + '/');
+
+//18.191.154.123 -- ECS VPC instance Public IP Address.
