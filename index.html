@@ -32,28 +32,71 @@
                 $('#clock').html( formatTime(hour) + ':' + formatTime(min) + ':' + formatTime(sec) );
             }, 1000);
             
-            $('#submit').off().on('click', function(){
-                let form = this.parentElement.parentElement;
-                let valOne = form.valOne.value;
-                let valTwo = form.valTwo.value;
-                if (valOne || valTwo){
+            function addNew(){
+                $('#remove').before('<span>&nbsp;+&nbsp;</span><input type="text" class="num"/>'); //add another input
+                $(this).css({ //modify style
+                    'margin-left': '1px',
+                    'border-radius': '0 5px 5px 0',
+                    'width': '30px'
+                });
+                $('#remove').show();
+            return false;
+            }
+            $('#new').on('click', addNew);
+            $('#remove').on('click', function(){ //handle removing previous input
+                let $el = $(this);
+                if ($el.parent().children('input.num').length > 2){ //don't allow removal of the original 2 inputs
+                    $el.prev().remove(); //remove input
+                    $el.prev().remove(); //remove label +
+                    if ($el.parent().children('input.num').length === 2){ //return to original styling if we just removed the last new input
+                        $el.hide();
+                        $('#new').css({ //modify style
+                            'margin-left': '5px',
+                            'border-radius': '5px',
+                            'width': '60px'
+                        });
+                        
+                    }
+                    $('#submit').click(); //reprocess
+                }
+            return false;
+            });
+            
+            
+            $('#submit').on('click', function(){
+                let params = '';
+                $('.num').each(function(){
+                    if (this.value > 0){
+                        params += '/' + this.value
+                    }
+                });
+                let $result = $('#result');
+                $result.css({
+                    'background':'white url(spinner.gif) no-repeat 25px'
+                });
+
+                if (params){
                     $.ajax({ 
     					type: 'POST',
-    					url: './' + valOne + '/' + valTwo,
+    					url: '.' + params,
     					success: function(result){
     					    //console.log(result);
-    					    if (result && result.sum){
-    					        form.result.value =result.sum
+    		                if (result && result.sum){
+                                $result.val(result.sum);
     					    } else {
-    					        form.result.value = 'ERROR'
+    		                    $result.val('ERROR');
     					    }
     	                    $('#error_msg').text('');
+                            $result.css({
+                                'background':'white'
+                            });
     					},
     					error: function(){
     						$('#error_msg').text('Error parsing server response');
     					}
                     });
                 } else {
+                    $result.val('');
                     $('#error_msg').text('At least try entering one number.');
                 }
              return false;
@@ -74,11 +117,13 @@
       <form>
           <div id="calc">
               <h3>Input 2 numbers below and click calculate:</h3>
-              <input type="text" name="valOne"/>
+              <input type="text" class="num"/>
               <span>&nbsp;+&nbsp;</span>
-              <input type="text" name="valTwo"/>
+              <input type="text" class="num"/>
+              <button id='remove' class="add">-</button>
+              <button id='new' class="add">+</button>
               <span>&nbsp;=&nbsp;</span>
-              <input type="text" name="result" readonly/>
+              <input type="text" id="result" readonly/>
               <button id='submit'>Calculate</button>
               <span id='error_msg'></span>
           </div>
